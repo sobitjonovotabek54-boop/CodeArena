@@ -1,0 +1,102 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { Play } from "lucide-react";
+import { AppShell } from "@/components/layout/app-shell";
+import { Protected } from "@/components/layout/protected";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { api } from "@/lib/api";
+import { useLang } from "@/store/lang";
+import { getProblemDescription, getProblemTitle } from "@/lib/problem-translations";
+import type { Problem } from "@/lib/types";
+import { cn, difficultyColor } from "@/lib/utils";
+
+export default function ProblemDetailPage() {
+  return (
+    <Protected>
+      <DetailInner />
+    </Protected>
+  );
+}
+
+function DetailInner() {
+  const { id } = useParams<{ id: string }>();
+  const [problem, setProblem] = useState<Problem | null>(null);
+  const { t, lang } = useLang();
+
+  useEffect(() => {
+    api<Problem>(`/problems/${id}/`).then(setProblem).catch(console.error);
+  }, [id]);
+
+  if (!problem) {
+    return (
+      <AppShell>
+        <div className="flex h-64 items-center justify-center text-zinc-500">
+          Loading…
+        </div>
+      </AppShell>
+    );
+  }
+
+  const title = getProblemTitle(problem, lang);
+  const description = getProblemDescription(problem, lang);
+
+  return (
+    <AppShell>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4 animate-fade-up">
+        <div>
+          <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">{title}</h1>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
+            <Badge className={cn(difficultyColor(problem.difficulty))}>{problem.difficulty}</Badge>
+            <Badge>{problem.category?.name || "Algorithms"}</Badge>
+            <Badge>+{problem.xp_reward} XP</Badge>
+            <Badge>{problem.acceptance_rate}% acceptance</Badge>
+          </div>
+        </div>
+        <Link href={`/problems/${problem.slug}/solve`}>
+          <Button size="lg" className="gap-2">
+            <Play className="h-4 w-4 fill-current" />
+            {t.problems.solveBtn}
+          </Button>
+        </Link>
+      </div>
+
+      <Card className="border-zinc-800/80 bg-zinc-900/40 backdrop-blur">
+        <CardContent className="space-y-6 p-6">
+          <section>
+            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              {t.workspace.problemDesc}
+            </h2>
+            <p className="whitespace-pre-wrap text-zinc-300 leading-relaxed">{description}</p>
+          </section>
+
+          {problem.examples?.map((ex, i) => (
+            <section key={i} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+              <h2 className="mb-2 text-xs font-semibold text-zinc-400">
+                {t.workspace.examples} {i + 1}
+              </h2>
+              <pre className="rounded-lg bg-black/50 p-3 font-mono text-xs text-zinc-200">
+                {`${t.workspace.input}:\n${ex.input}\n\n${t.workspace.expectedOutput}:\n${ex.output}`}
+              </pre>
+            </section>
+          ))}
+
+          {problem.constraints && (
+            <section>
+              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                {t.workspace.constraints}
+              </h2>
+              <pre className="whitespace-pre-wrap rounded-lg bg-zinc-900/50 p-3 text-xs text-zinc-400 font-mono">
+                {problem.constraints}
+              </pre>
+            </section>
+          )}
+        </CardContent>
+      </Card>
+    </AppShell>
+  );
+}
