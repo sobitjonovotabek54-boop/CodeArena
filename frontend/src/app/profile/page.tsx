@@ -32,7 +32,7 @@ function ProfileInner() {
   if (!profile) {
     return (
       <AppShell>
-        <div className="text-zinc-500">Loading profile…</div>
+        <div className="text-greyple">Loading profile…</div>
       </AppShell>
     );
   }
@@ -40,7 +40,7 @@ function ProfileInner() {
   return (
     <AppShell>
       <div className="mb-8 flex flex-wrap items-center gap-5">
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900 text-2xl font-bold text-emerald-400">
+        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[16px] bg-blurple text-2xl font-bold text-snow">
           {profile.avatar_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
@@ -49,9 +49,9 @@ function ProfileInner() {
           )}
         </div>
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">{profile.username}</h1>
-          <p className="mt-1 max-w-lg text-zinc-500">{profile.bio || "No bio yet."}</p>
-          <p className="mt-1 text-sm text-zinc-600">
+          <h1 className="font-display-discord text-[36px] text-snow sm:text-[48px]">{profile.username}</h1>
+          <p className="mt-1 max-w-lg text-fog">{profile.bio || "No bio yet."}</p>
+          <p className="mt-1 text-sm text-greyple">
             Level {profile.level} · Rank #{profile.rank} · {user?.email}
           </p>
         </div>
@@ -66,8 +66,8 @@ function ProfileInner() {
         ].map(([label, value]) => (
           <Card key={label as string}>
             <CardContent className="p-5">
-              <div className="text-xs text-zinc-500">{label}</div>
-              <div className="text-2xl font-semibold">{value}</div>
+              <div className="text-xs text-greyple">{label}</div>
+              <div className="text-2xl font-medium text-snow">{value}</div>
             </CardContent>
           </Card>
         ))}
@@ -90,13 +90,13 @@ function ProfileInner() {
           {achievements.map((a) => (
             <div
               key={a.code}
-              className={`rounded-lg border p-3 ${
-                a.unlocked ? "border-emerald-800/60 bg-emerald-950/20" : "border-zinc-800 opacity-60"
+              className={`rounded-[12px] p-3 ${
+                a.unlocked ? "bg-blurple/15 ring-1 ring-blurple/40" : "bg-dark-charcoal opacity-60"
               }`}
             >
-              <div className="font-medium">{a.title}</div>
-              <div className="text-xs text-zinc-500">{a.description}</div>
-              <div className="mt-2 text-xs text-zinc-400">
+              <div className="font-medium text-snow">{a.title}</div>
+              <div className="text-xs text-fog">{a.description}</div>
+              <div className="mt-2 text-xs text-greyple">
                 {a.unlocked ? "Unlocked" : `Progress ${a.progress}/${a.threshold}`}
               </div>
             </div>

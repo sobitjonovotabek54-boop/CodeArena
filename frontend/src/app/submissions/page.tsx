@@ -7,7 +7,7 @@ import { Protected } from "@/components/layout/protected";
 import { api } from "@/lib/api";
 import { useLang } from "@/store/lang";
 import type { Paginated, Submission } from "@/lib/types";
-import { cn, formatStatus, statusColor } from "@/lib/utils";
+import { cn, formatStatus, statusColor, tableWrapClass, thClass, trClass } from "@/lib/utils";
 
 export default function SubmissionsPage() {
   return (
@@ -28,49 +28,47 @@ function SubmissionsInner() {
   return (
     <AppShell>
       <div className="mb-6 animate-fade-up">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">
-          {t.submissions.title}
-        </h1>
-        <p className="mt-1 text-sm text-zinc-400">{t.submissions.subtitle}</p>
+        <h1 className="font-display-discord text-[36px] text-snow sm:text-[48px]">{t.submissions.title}</h1>
+        <p className="mt-2 text-sm text-fog">{t.submissions.subtitle}</p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/30 backdrop-blur">
+      <div className={tableWrapClass}>
         <table className="w-full text-left text-sm">
-          <thead className="bg-zinc-900/80 text-xs uppercase tracking-wider text-zinc-400">
+          <thead className="bg-dark-charcoal">
             <tr>
-              <th className="px-4 py-3.5">{t.submissions.problem}</th>
-              <th className="px-4 py-3.5">{t.submissions.status}</th>
-              <th className="px-4 py-3.5">{t.submissions.language}</th>
-              <th className="px-4 py-3.5">{t.submissions.runtime}</th>
-              <th className="px-4 py-3.5">{t.submissions.date}</th>
+              <th className={thClass}>{t.submissions.problem}</th>
+              <th className={thClass}>{t.submissions.status}</th>
+              <th className={thClass}>{t.submissions.language}</th>
+              <th className={thClass}>{t.submissions.runtime}</th>
+              <th className={thClass}>{t.submissions.date}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800">
+          <tbody>
             {(!data?.results || data.results.length === 0) && (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-sm text-zinc-500">
+                <td colSpan={5} className="py-8 text-center text-sm text-greyple">
                   {t.dashboard.noSubmissions}
                 </td>
               </tr>
             )}
             {data?.results.map((s) => (
-              <tr key={s.id} className="hover:bg-zinc-800/40 transition">
+              <tr key={s.id} className={trClass}>
                 <td className="px-4 py-3">
                   <Link
                     href={`/problems/${s.problem_slug}/solve`}
-                    className="font-medium text-zinc-200 hover:text-emerald-400 transition"
+                    className="font-medium text-snow hover:text-hover-blurple"
                   >
                     {s.problem_title}
                   </Link>
                 </td>
-                <td className={cn("px-4 py-3 font-semibold", statusColor(s.status))}>
+                <td className={cn("px-4 py-3 font-medium", statusColor(s.status))}>
                   {formatStatus(s.status)}
                 </td>
-                <td className="px-4 py-3 text-zinc-400">{s.language}</td>
-                <td className="px-4 py-3 font-mono text-zinc-400">
+                <td className="px-4 py-3 text-fog">{s.language}</td>
+                <td className="px-4 py-3 font-mono text-fog">
                   {s.runtime != null ? `${s.runtime.toFixed(1)} ms` : "—"}
                 </td>
-                <td className="px-4 py-3 text-zinc-500">{new Date(s.created_at).toLocaleString()}</td>
+                <td className="px-4 py-3 text-greyple">{new Date(s.created_at).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

@@ -16,11 +16,11 @@ export function ActivityChart({ days }: { days: Day[] }) {
   }
 
   const level = (c: number) => {
-    if (c === 0) return "bg-zinc-800/80";
-    if (c === 1) return "bg-emerald-900";
-    if (c <= 3) return "bg-emerald-700";
-    if (c <= 5) return "bg-emerald-500";
-    return "bg-emerald-400";
+    if (c === 0) return "bg-dark-charcoal";
+    if (c === 1) return "bg-blurple/30";
+    if (c <= 3) return "bg-blurple/55";
+    if (c <= 5) return "bg-blurple";
+    return "bg-hover-blurple";
   };
 
   return (
@@ -34,7 +34,7 @@ export function ActivityChart({ days }: { days: Day[] }) {
           />
         ))}
       </div>
-      <div className="mt-2 flex items-center gap-1 text-[10px] text-zinc-500">
+      <div className="mt-2 flex items-center gap-1 text-[10px] text-greyple">
         Less
         {[0, 1, 3, 5, 8].map((n) => (
           <span key={n} className={cn("h-2.5 w-2.5 rounded-[2px]", level(n))} />
