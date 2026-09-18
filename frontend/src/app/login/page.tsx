@@ -8,6 +8,7 @@ import { useLang } from "@/store/lang";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LangSwitch } from "@/components/layout/lang-switch";
+import { Code2 } from "lucide-react";
 
 export default function LoginPage() {
   const { login, loading } = useAuth();
@@ -29,28 +30,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#07090d] px-4">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 shadow-2xl backdrop-blur">
+    <div className="relative flex min-h-screen items-center justify-center bg-cosmic px-4">
+      <div className="pointer-events-none absolute inset-0 starfield opacity-50" />
+      <div className="relative w-full max-w-md rounded-[24px] bg-not-quite-black p-8">
         <div className="mb-4 flex justify-end">
           <LangSwitch />
         </div>
         <div className="mb-6 text-center">
-          <div className="font-[family-name:var(--font-display)] text-2xl font-bold">
-            Code<span className="text-emerald-400">Arena</span>
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-[12px] bg-blurple">
+            <Code2 className="h-6 w-6 text-snow" />
           </div>
-          <p className="mt-1 text-sm text-zinc-400">{t.auth.loginSubtitle}</p>
+          <div className="font-display-discord text-2xl text-snow">CodeArena</div>
+          <p className="mt-2 text-[16px] text-fog">{t.auth.loginSubtitle}</p>
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">
-              {t.auth.username}
-            </label>
+            <label className="mb-1.5 block text-sm font-medium text-fog">{t.auth.username}</label>
             <Input value={username} onChange={(e) => setUsername(e.target.value)} required />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-zinc-400">
-              {t.auth.password}
-            </label>
+            <label className="mb-1.5 block text-sm font-medium text-fog">{t.auth.password}</label>
             <Input
               type="password"
               value={password}
@@ -59,21 +58,21 @@ export default function LoginPage() {
             />
           </div>
           {error && (
-            <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-400">
+            <div className="rounded-[12px] border border-ekko-red/40 bg-ekko-red/10 p-3 text-sm text-ekko-red">
               {error}
             </div>
           )}
-          <Button className="w-full" disabled={loading}>
+          <Button className="w-full" size="lg" disabled={loading}>
             {loading ? "Kirilmoqda…" : t.auth.signInBtn}
           </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-zinc-400">
+        <p className="mt-4 text-center text-[16px] text-fog">
           {t.auth.noAccount}{" "}
-          <Link href="/register" className="text-emerald-400 font-semibold hover:underline">
+          <Link href="/register" className="font-medium text-hover-blurple hover:underline">
             {t.auth.signUpBtn}
           </Link>
         </p>
-        <p className="mt-2 text-center text-[11px] text-zinc-500 font-mono">Demo: alice / pass1234</p>
+        <p className="mt-2 text-center font-mono text-[11px] text-greyple">Demo: alice / pass1234</p>
       </div>
     </div>
   );

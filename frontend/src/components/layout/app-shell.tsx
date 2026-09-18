@@ -12,7 +12,6 @@ import {
   LogOut,
   Shield,
   FileCode2,
-  Flame,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
@@ -37,17 +36,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#07090d] text-zinc-100">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(16,185,129,0.08),_transparent_50%),radial-gradient(ellipse_at_bottom_right,_rgba(56,189,248,0.05),_transparent_40%)]" />
-      <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-[#07090d]/85 backdrop-blur-xl">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-4">
-          <Link href="/dashboard" className="flex items-center gap-2 font-semibold tracking-tight">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
-              <Flame className="h-4 w-4" />
+    <div className="min-h-screen bg-cosmic text-snow">
+      <div className="pointer-events-none fixed inset-0 starfield opacity-40" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,rgba(88,101,242,0.12),transparent_55%)]" />
+      <header className="sticky top-0 z-40 border-b border-dim-grey/30 bg-not-quite-black/90 backdrop-blur-xl">
+        <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between gap-4 px-4">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-[12px] bg-blurple text-snow">
+              <Code2 className="h-4 w-4" />
             </span>
-            <span className="font-[family-name:var(--font-display)] text-lg">
-              Code<span className="text-emerald-400">Arena</span>
-            </span>
+            <span className="font-display-discord text-base text-snow">CodeArena</span>
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             {links.map(({ href, label, icon: Icon }) => {
@@ -57,8 +55,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   key={href}
                   href={href}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-zinc-400 transition hover:bg-zinc-800/60 hover:text-zinc-100",
-                    active && "bg-zinc-850 text-emerald-400 font-semibold"
+                    "flex items-center gap-1.5 rounded-[12px] px-3 py-1.5 text-sm text-fog transition hover:bg-dark-charcoal hover:text-snow",
+                    active && "bg-blurple/20 text-snow font-medium"
                   )}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -70,8 +68,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 href="/admin"
                 className={cn(
-                  "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-zinc-400 transition hover:bg-zinc-800/60",
-                  pathname.startsWith("/admin") && "bg-zinc-800 text-amber-400 font-semibold"
+                  "flex items-center gap-1.5 rounded-[12px] px-3 py-1.5 text-sm text-fog transition hover:bg-dark-charcoal",
+                  pathname.startsWith("/admin") && "bg-ember-orange/20 text-ember-orange font-medium"
                 )}
               >
                 <Shield className="h-3.5 w-3.5" />
@@ -80,13 +78,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             )}
           </nav>
           <div className="flex items-center gap-2.5">
-            {/* Language Switcher */}
             <LangSwitch />
-
             {user && (
               <div className="hidden text-right text-xs sm:block">
-                <div className="font-semibold text-zinc-200">{user.username}</div>
-                <div className="text-zinc-500">
+                <div className="font-medium text-snow">{user.username}</div>
+                <div className="text-greyple">
                   Lv {user.profile?.level ?? 1} · {user.profile?.xp ?? 0} XP
                 </div>
               </div>
@@ -105,7 +101,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
-      <main className="relative mx-auto max-w-7xl px-4 py-8">{children}</main>
+      <main className="relative mx-auto max-w-[1200px] px-4 py-8">{children}</main>
     </div>
   );
 }
