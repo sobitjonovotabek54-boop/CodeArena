@@ -3,28 +3,30 @@ import { cn } from "@/lib/utils";
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold tracking-wide transition-all duration-200 cursor-pointer select-none active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 disabled:pointer-events-none disabled:opacity-40 disabled:cursor-not-allowed",
+  "inline-flex items-center justify-center gap-2 text-[16px] font-medium tracking-[0.016em] transition-colors duration-150 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blurple/60 focus-visible:ring-offset-2 focus-visible:ring-offset-cosmic disabled:pointer-events-none disabled:opacity-40 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
         default:
-          "bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-600 hover:from-emerald-300 hover:via-emerald-400 hover:to-emerald-500 text-zinc-950 font-bold shadow-[0_2px_12px_rgba(16,185,129,0.35),inset_0_1px_0_rgba(255,255,255,0.25)] hover:shadow-[0_4px_22px_rgba(16,185,129,0.5),inset_0_1px_0_rgba(255,255,255,0.35)] border border-emerald-300/40 hover:border-emerald-200/60",
+          "bg-blurple text-snow rounded-[12px] hover:bg-dark-blurple border-0",
         secondary:
-          "bg-gradient-to-b from-zinc-800/90 to-zinc-900/90 hover:from-zinc-750 hover:to-zinc-850 text-zinc-200 hover:text-white border border-zinc-700/80 hover:border-zinc-500 shadow-[0_2px_8px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] hover:shadow-[0_4px_14px_rgba(0,0,0,0.6)] backdrop-blur-sm",
+          "bg-snow text-not-quite-black rounded-[12px] border border-not-quite-black hover:bg-off-white",
         ghost:
-          "hover:bg-zinc-800/70 text-zinc-400 hover:text-zinc-100",
+          "bg-transparent text-snow border border-snow rounded-[12px] hover:bg-snow/10",
         outline:
-          "border border-zinc-700/80 bg-zinc-900/40 hover:bg-zinc-800/70 hover:border-zinc-500 text-zinc-200 hover:text-white backdrop-blur-md shadow-sm",
+          "bg-transparent text-snow border border-dim-grey rounded-[12px] hover:border-fog hover:text-snow",
+        login:
+          "bg-snow text-void border border-void rounded-[16px] hover:bg-off-white",
         danger:
-          "bg-gradient-to-b from-rose-500/20 to-rose-600/30 hover:from-rose-500 hover:to-rose-600 text-rose-300 hover:text-white border border-rose-500/40 hover:border-rose-400 shadow-[0_2px_10px_rgba(244,63,94,0.2)]",
+          "bg-ekko-red/15 text-ekko-red border border-ekko-red/40 rounded-[12px] hover:bg-ekko-red hover:text-snow",
         glow:
-          "bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:shadow-[0_0_35px_rgba(16,185,129,0.7)] border border-emerald-300/50",
+          "bg-blurple text-snow rounded-[12px] hover:bg-dark-blurple",
       },
       size: {
-        default: "h-10 px-4 py-2 text-sm",
-        sm: "h-8 px-3 text-xs rounded-lg font-medium",
-        lg: "h-11 px-6 text-base rounded-xl font-bold",
-        icon: "h-9 w-9 rounded-lg",
+        default: "px-6 py-[15px]",
+        sm: "px-4 py-2.5 text-sm rounded-[12px]",
+        lg: "px-6 py-[19.5px] rounded-[12px]",
+        icon: "h-10 w-10 rounded-[12px]",
       },
     },
     defaultVariants: { variant: "default", size: "default" },

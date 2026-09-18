@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans, JetBrains_Mono } from "next/font/google";
+import { Nunito, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/layout/protected";
 
-const display = Syne({
-  subsets: ["latin"],
+const display = Nunito({
+  subsets: ["latin", "cyrillic"],
+  weight: ["700", "800"],
   variable: "--font-display",
 });
 
-const body = DM_Sans({
-  subsets: ["latin"],
+const body = Nunito({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-body",
 });
 
