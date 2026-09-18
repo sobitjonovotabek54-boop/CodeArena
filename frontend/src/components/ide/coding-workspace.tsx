@@ -155,12 +155,12 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
     <div
       id="ide-root"
       className={cn(
-        "flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0e14] shadow-2xl transition-all",
+        "flex flex-col overflow-hidden rounded-[16px] border border-dim-grey/50 bg-not-quite-black shadow-2xl transition-all",
         fullscreen && "fixed inset-2 z-50 rounded-xl"
       )}
     >
       {/* Top Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 bg-zinc-900/60 px-4 py-2.5 backdrop-blur-md">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-dim-grey/50 bg-dark-charcoal px-4 py-2.5 backdrop-blur-md">
         <div className="flex items-center gap-1.5">
           {LANGS.map((l) => (
             <button
@@ -170,8 +170,8 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
               className={cn(
                 "rounded-lg px-3 py-1 text-xs font-semibold transition-all duration-150 active:scale-[0.97]",
                 language === l.id
-                  ? "bg-emerald-500 font-bold text-zinc-950 shadow-[0_1px_8px_rgba(16,185,129,0.35)]"
-                  : "text-zinc-400 hover:bg-zinc-800/70 hover:text-zinc-200"
+                  ? "bg-blurple font-bold text-snow "
+                  : "text-fog hover:bg-not-quite-black hover:text-snow"
               )}
             >
               {l.label}
@@ -180,7 +180,7 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1.5 text-xs text-zinc-400">
+          <label className="flex items-center gap-1.5 text-xs text-fog">
             <span>{t.workspace.fontSize}:</span>
             <input
               type="range"
@@ -188,7 +188,7 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
               max={20}
               value={fontSize}
               onChange={(e) => setFontSize(Number(e.target.value))}
-              className="w-16 accent-emerald-500"
+              className="w-16 accent-blurple"
             />
           </label>
           <Button
@@ -198,7 +198,7 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
             onClick={copyToClipboard}
           >
             {copied ? (
-              <Check className="h-4 w-4 text-emerald-400" />
+              <Check className="h-4 w-4 text-spring-green" />
             ) : (
               <Copy className="h-4 w-4" />
             )}
@@ -226,40 +226,40 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
       <div className="flex min-h-0 flex-1" style={{ height: fullscreen ? "calc(100vh - 180px)" : 580 }}>
         {/* Left pane: Problem description */}
         <aside
-          className="overflow-y-auto border-r border-zinc-800/80 p-5"
+          className="overflow-y-auto border-r border-dim-grey/50 p-5"
           style={{ width: `${leftWidth}%` }}
         >
           <div className="mb-3 flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-zinc-100">
+            <h1 className="text-xl font-bold tracking-tight text-snow">
               {getProblemTitle(problem, lang)}
             </h1>
             <Badge className={difficultyColor(problem.difficulty)}>{problem.difficulty}</Badge>
             <Badge>+{problem.xp_reward} XP</Badge>
           </div>
-          <div className="prose prose-invert prose-sm max-w-none whitespace-pre-wrap text-zinc-300 leading-relaxed">
+          <div className="prose prose-invert prose-sm max-w-none whitespace-pre-wrap text-fog leading-relaxed">
             {getProblemDescription(problem, lang)}
           </div>
           {problem.examples?.map((ex, i) => (
-            <div key={i} className="mt-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-3.5 text-sm">
-              <div className="mb-1 text-xs font-semibold text-zinc-400">
+            <div key={i} className="mt-4 rounded-xl border border-dim-grey/50 bg-dark-charcoal p-3.5 text-sm">
+              <div className="mb-1 text-xs font-semibold text-fog">
                 {t.workspace.examples} {i + 1}
               </div>
-              <div className="text-xs text-zinc-400">{t.workspace.input}</div>
-              <pre className="mt-1 overflow-x-auto rounded-lg bg-black/50 p-2.5 font-mono text-xs text-zinc-200">
+              <div className="text-xs text-fog">{t.workspace.input}</div>
+              <pre className="mt-1 overflow-x-auto rounded-lg bg-void/60 p-2.5 font-mono text-xs text-snow">
                 {ex.input}
               </pre>
-              <div className="mt-2 text-xs text-zinc-400">{t.workspace.expectedOutput}</div>
-              <pre className="mt-1 overflow-x-auto rounded-lg bg-black/50 p-2.5 font-mono text-xs text-zinc-200">
+              <div className="mt-2 text-xs text-fog">{t.workspace.expectedOutput}</div>
+              <pre className="mt-1 overflow-x-auto rounded-lg bg-void/60 p-2.5 font-mono text-xs text-snow">
                 {ex.output}
               </pre>
             </div>
           ))}
           {problem.constraints && (
             <div className="mt-4">
-              <div className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+              <div className="text-xs font-semibold text-fog uppercase tracking-wider">
                 {t.workspace.constraints}
               </div>
-              <pre className="mt-1 whitespace-pre-wrap rounded-lg bg-zinc-900/40 p-2.5 text-xs text-zinc-400 font-mono">
+              <pre className="mt-1 whitespace-pre-wrap rounded-lg bg-dark-charcoal p-2.5 text-xs text-fog font-mono">
                 {problem.constraints}
               </pre>
             </div>
@@ -268,7 +268,7 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
 
         {/* Resizer bar */}
         <div
-          className="w-1.5 cursor-col-resize bg-zinc-800 hover:bg-emerald-500/50 transition"
+          className="w-1.5 cursor-col-resize bg-dim-grey/60 hover:bg-blurple/50 transition"
           onMouseDown={() => {
             dragging.current = "h";
           }}
@@ -303,16 +303,16 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
 
       {/* Horizontal resizer */}
       <div
-        className="h-1.5 cursor-row-resize bg-zinc-800 hover:bg-emerald-500/50 transition"
+        className="h-1.5 cursor-row-resize bg-dim-grey/60 hover:bg-blurple/50 transition"
         onMouseDown={() => {
           dragging.current = "v";
         }}
       />
 
       {/* Console / Test Results Panel */}
-      <div className="border-t border-zinc-800/80 bg-[#0a0c10]" style={{ height: consoleHeight }}>
-        <div className="flex items-center justify-between border-b border-zinc-800/80 px-4 py-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+      <div className="border-t border-dim-grey/50 bg-void" style={{ height: consoleHeight }}>
+        <div className="flex items-center justify-between border-b border-dim-grey/50 px-4 py-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-fog">
             {t.workspace.console} / {t.workspace.testResults}
           </span>
           {result && (
@@ -324,22 +324,22 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
         </div>
         <div className="h-[calc(100%-36px)] overflow-y-auto p-3.5 font-mono text-xs">
           {error && (
-            <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-2.5 text-rose-400">
+            <div className="rounded-lg border border-ekko-red/30 bg-ekko-red/10 p-2.5 text-ekko-red">
               {error}
             </div>
           )}
           {reward?.first_solve && (
-            <div className="mb-2.5 rounded-lg border border-emerald-500/40 bg-emerald-950/40 p-2.5 text-emerald-300 font-sans font-semibold flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            <div className="mb-2.5 rounded-lg border border-spring-green/40 bg-spring-green/10 p-2.5 text-spring-green font-sans font-semibold flex items-center gap-2 ">
               <span>🎉</span> {t.workspace.congrats} +{reward.xp_gained} {t.workspace.xpGained}
             </div>
           )}
           {!result && !error && (
-            <div className="text-zinc-500">
+            <div className="text-greyple">
               {t.workspace.runCode} yoki {t.workspace.submitCode} tugmasini bosing.
             </div>
           )}
           {result?.stderr && (
-            <pre className="mb-2 whitespace-pre-wrap text-rose-400">{result.stderr}</pre>
+            <pre className="mb-2 whitespace-pre-wrap text-ekko-red">{result.stderr}</pre>
           )}
           {result?.test_results?.map((tCase, i) => (
             <div
@@ -347,42 +347,42 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
               className={cn(
                 "mb-2.5 rounded-xl border p-3",
                 tCase.passed
-                  ? "border-emerald-900/60 bg-emerald-950/20"
-                  : "border-rose-900/60 bg-rose-950/20"
+                  ? "border-spring-green/30 bg-spring-green/10"
+                  : "border-ekko-red/30 bg-ekko-red/10"
               )}
             >
               <div className="mb-1.5 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {tCase.passed ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                    <CheckCircle2 className="h-4 w-4 text-spring-green" />
                   ) : (
-                    <XCircle className="h-4 w-4 text-rose-400" />
+                    <XCircle className="h-4 w-4 text-ekko-red" />
                   )}
-                  <span className="font-semibold text-zinc-200">
+                  <span className="font-semibold text-snow">
                     {t.workspace.testCase} {i + 1}
                   </span>
                   <span
                     className={cn(
                       "rounded px-1.5 py-0.5 text-[10px] font-bold uppercase",
                       tCase.passed
-                        ? "bg-emerald-500/20 text-emerald-400"
-                        : "bg-rose-500/20 text-rose-400"
+                        ? "bg-blurple/20 text-spring-green"
+                        : "bg-ekko-red/20 text-ekko-red"
                     )}
                   >
                     {tCase.passed ? t.workspace.passed : t.workspace.failed}
                   </span>
                 </div>
-                <span className="text-zinc-500">{tCase.runtime_ms?.toFixed?.(2)} ms</span>
+                <span className="text-greyple">{tCase.runtime_ms?.toFixed?.(2)} ms</span>
               </div>
-              <div className="grid gap-1 text-zinc-400 mt-2">
+              <div className="grid gap-1 text-fog mt-2">
                 <div>
-                  <span className="text-zinc-500">{t.workspace.input}:</span> {tCase.input}
+                  <span className="text-greyple">{t.workspace.input}:</span> {tCase.input}
                 </div>
                 <div>
-                  <span className="text-zinc-500">{t.workspace.expected}:</span> {tCase.expected}
+                  <span className="text-greyple">{t.workspace.expected}:</span> {tCase.expected}
                 </div>
                 <div>
-                  <span className="text-zinc-500">{t.workspace.actual}:</span>{" "}
+                  <span className="text-greyple">{t.workspace.actual}:</span>{" "}
                   {tCase.actual || tCase.error || "—"}
                 </div>
               </div>
@@ -392,9 +392,9 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
       </div>
 
       {/* Bottom Actions Bar */}
-      <div className="flex items-center justify-end gap-3 border-t border-zinc-800/80 bg-zinc-900/60 px-4 py-2.5 backdrop-blur-md">
+      <div className="flex items-center justify-end gap-3 border-t border-dim-grey/50 bg-dark-charcoal px-4 py-2.5 backdrop-blur-md">
         <Button variant="secondary" onClick={run} disabled={!!busy}>
-          <Play className="h-4 w-4 text-emerald-400 fill-emerald-400" />
+          <Play className="h-4 w-4 text-spring-green fill-spring-green" />
           {busy === "run" ? t.workspace.running : t.workspace.runCode}
         </Button>
         <Button onClick={submit} disabled={!!busy}>

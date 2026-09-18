@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Code2 } from "lucide-react";
 import { Protected } from "@/components/layout/protected";
 import { CodingWorkspace } from "@/components/ide/coding-workspace";
 import { api } from "@/lib/api";
@@ -27,25 +27,29 @@ function SolveInner() {
 
   if (!problem) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#07090d] text-zinc-500">
+      <div className="flex min-h-screen items-center justify-center bg-cosmic text-greyple">
         Loading workspace…
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#07090d] p-3 md:p-4">
-      <div className="mb-3 flex items-center gap-3">
-        <Link href={`/problems/${problem.slug}`} className="text-zinc-500 hover:text-zinc-200">
+    <div className="min-h-screen bg-cosmic p-3 md:p-4">
+      <div className="pointer-events-none fixed inset-0 starfield opacity-30" />
+      <div className="relative mb-3 flex items-center gap-3">
+        <Link href={`/problems/${problem.slug}`} className="text-fog hover:text-snow">
           <ArrowLeft className="h-4 w-4" />
         </Link>
-        <span className="font-[family-name:var(--font-display)] text-sm font-semibold">
-          Code<span className="text-emerald-400">Arena</span>
+        <span className="flex h-7 w-7 items-center justify-center rounded-[8px] bg-blurple">
+          <Code2 className="h-3.5 w-3.5 text-snow" />
         </span>
-        <span className="text-zinc-600">/</span>
-        <span className="text-sm text-zinc-300">{problem.title}</span>
+        <span className="font-display-discord text-sm text-snow">CodeArena</span>
+        <span className="text-dim-grey">/</span>
+        <span className="text-sm text-fog">{problem.title}</span>
       </div>
-      <CodingWorkspace problem={problem} />
+      <div className="relative">
+        <CodingWorkspace problem={problem} />
+      </div>
     </div>
   );
 }

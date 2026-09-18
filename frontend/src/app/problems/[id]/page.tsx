@@ -35,9 +35,7 @@ function DetailInner() {
   if (!problem) {
     return (
       <AppShell>
-        <div className="flex h-64 items-center justify-center text-zinc-500">
-          Loading…
-        </div>
+        <div className="flex h-64 items-center justify-center text-greyple">Loading…</div>
       </AppShell>
     );
   }
@@ -49,7 +47,7 @@ function DetailInner() {
     <AppShell>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4 animate-fade-up">
         <div>
-          <h1 className="font-[family-name:var(--font-display)] text-3xl font-bold">{title}</h1>
+          <h1 className="font-display-discord text-[36px] text-snow sm:text-[48px]">{title}</h1>
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             <Badge className={cn(difficultyColor(problem.difficulty))}>{problem.difficulty}</Badge>
             <Badge>{problem.category?.name || "Algorithms"}</Badge>
@@ -65,21 +63,21 @@ function DetailInner() {
         </Link>
       </div>
 
-      <Card className="border-zinc-800/80 bg-zinc-900/40 backdrop-blur">
+      <Card>
         <CardContent className="space-y-6 p-6">
           <section>
-            <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-2 text-xs font-medium uppercase tracking-[0.013em] text-fog">
               {t.workspace.problemDesc}
             </h2>
-            <p className="whitespace-pre-wrap text-zinc-300 leading-relaxed">{description}</p>
+            <p className="whitespace-pre-wrap leading-relaxed text-fog">{description}</p>
           </section>
 
           {problem.examples?.map((ex, i) => (
-            <section key={i} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-              <h2 className="mb-2 text-xs font-semibold text-zinc-400">
+            <section key={i} className="rounded-[16px] bg-dark-charcoal p-4">
+              <h2 className="mb-2 text-xs font-medium text-fog">
                 {t.workspace.examples} {i + 1}
               </h2>
-              <pre className="rounded-lg bg-black/50 p-3 font-mono text-xs text-zinc-200">
+              <pre className="rounded-[12px] bg-void/60 p-3 font-mono text-xs text-snow">
                 {`${t.workspace.input}:\n${ex.input}\n\n${t.workspace.expectedOutput}:\n${ex.output}`}
               </pre>
             </section>
@@ -87,10 +85,10 @@ function DetailInner() {
 
           {problem.constraints && (
             <section>
-              <h2 className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              <h2 className="mb-2 text-xs font-medium uppercase tracking-[0.013em] text-fog">
                 {t.workspace.constraints}
               </h2>
-              <pre className="whitespace-pre-wrap rounded-lg bg-zinc-900/50 p-3 text-xs text-zinc-400 font-mono">
+              <pre className="whitespace-pre-wrap rounded-[12px] bg-dark-charcoal p-3 font-mono text-xs text-fog">
                 {problem.constraints}
               </pre>
             </section>

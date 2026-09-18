@@ -88,8 +88,8 @@ function AdminInner() {
 
   return (
     <AppShell>
-      <h1 className="mb-2 font-[family-name:var(--font-display)] text-3xl font-bold">Admin</h1>
-      <p className="mb-6 text-sm text-zinc-500">Manage users, problems, and platform stats</p>
+      <h1 className="mb-2 font-display-discord text-[36px] text-snow sm:text-[48px]">Admin</h1>
+      <p className="mb-6 text-sm text-fog">Manage users, problems, and platform stats</p>
 
       <div className="mb-6 flex gap-2">
         {(["overview", "users", "problems", "submissions"] as const).map((t) => (
@@ -104,8 +104,8 @@ function AdminInner() {
           {Object.entries(stats).map(([k, v]) => (
             <Card key={k}>
               <CardContent className="p-5">
-                <div className="text-xs uppercase text-zinc-500">{k}</div>
-                <div className="text-2xl font-semibold">{v as number}</div>
+                <div className="text-xs uppercase text-fog">{k}</div>
+                <div className="text-2xl font-medium text-snow">{v as number}</div>
               </CardContent>
             </Card>
           ))}
@@ -113,9 +113,9 @@ function AdminInner() {
       )}
 
       {tab === "users" && (
-        <div className="overflow-hidden rounded-xl border border-zinc-800">
+        <div className="overflow-hidden rounded-[16px] bg-not-quite-black">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900 text-xs uppercase text-zinc-500">
+            <thead className="bg-dark-charcoal text-xs uppercase text-fog">
               <tr>
                 <th className="px-4 py-3 text-left">User</th>
                 <th className="px-4 py-3 text-left">Email</th>
@@ -123,13 +123,13 @@ function AdminInner() {
                 <th className="px-4 py-3 text-left">XP</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800">
+            <tbody>
               {users.map((u) => (
-                <tr key={u.id}>
-                  <td className="px-4 py-3">{u.username}</td>
-                  <td className="px-4 py-3 text-zinc-500">{u.email}</td>
-                  <td className="px-4 py-3">{u.is_admin ? "Yes" : "No"}</td>
-                  <td className="px-4 py-3">{u.profile?.xp ?? 0}</td>
+                <tr key={u.id} className="border-t border-dim-grey/40">
+                  <td className="px-4 py-3 text-snow">{u.username}</td>
+                  <td className="px-4 py-3 text-fog">{u.email}</td>
+                  <td className="px-4 py-3 text-snow">{u.is_admin ? "Yes" : "No"}</td>
+                  <td className="px-4 py-3 text-ember-orange">{u.profile?.xp ?? 0}</td>
                 </tr>
               ))}
             </tbody>
@@ -147,14 +147,14 @@ function AdminInner() {
               <form onSubmit={createProblem} className="space-y-3">
                 <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
                 <textarea
-                  className="min-h-28 w-full rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-sm"
+                  className="min-h-28 w-full rounded-[12px] border border-dim-grey bg-not-quite-black p-3 text-sm text-snow"
                   placeholder="Description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   required
                 />
                 <select
-                  className="h-10 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-sm"
+                  className="h-10 w-full rounded-[12px] border border-dim-grey bg-not-quite-black px-3 text-sm text-snow"
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
                 >
@@ -163,7 +163,7 @@ function AdminInner() {
                   <option value="hard">Hard</option>
                 </select>
                 <select
-                  className="h-10 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-sm"
+                  className="h-10 w-full rounded-[12px] border border-dim-grey bg-not-quite-black px-3 text-sm text-snow"
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
                 >
@@ -173,7 +173,7 @@ function AdminInner() {
                     </option>
                   ))}
                 </select>
-                {msg && <p className="text-sm text-emerald-400">{msg}</p>}
+                {msg && <p className="text-sm text-spring-green">{msg}</p>}
                 <Button type="submit">Create</Button>
               </form>
             </CardContent>
@@ -182,11 +182,11 @@ function AdminInner() {
             {problems.map((p) => (
               <div
                 key={p.id}
-                className="flex items-center justify-between rounded-lg border border-zinc-800 px-3 py-2 text-sm"
+                className="flex items-center justify-between rounded-[12px] bg-not-quite-black px-3 py-2 text-sm"
               >
-                <span>
+                <span className="text-snow">
                   {p.title}{" "}
-                  <span className="text-zinc-500">({p.difficulty})</span>
+                  <span className="text-greyple">({p.difficulty})</span>
                 </span>
                 <Button variant="danger" size="sm" onClick={() => deleteProblem(p.slug)}>
                   Delete
@@ -198,9 +198,9 @@ function AdminInner() {
       )}
 
       {tab === "submissions" && (
-        <div className="overflow-hidden rounded-xl border border-zinc-800">
+        <div className="overflow-hidden rounded-[16px] bg-not-quite-black">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900 text-xs uppercase text-zinc-500">
+            <thead className="bg-dark-charcoal text-xs uppercase text-fog">
               <tr>
                 <th className="px-4 py-3 text-left">User</th>
                 <th className="px-4 py-3 text-left">Problem</th>
@@ -208,13 +208,13 @@ function AdminInner() {
                 <th className="px-4 py-3 text-left">Lang</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800">
+            <tbody>
               {submissions.map((s) => (
-                <tr key={s.id}>
-                  <td className="px-4 py-3">{s.username}</td>
-                  <td className="px-4 py-3">{s.problem_title}</td>
-                  <td className="px-4 py-3">{s.status}</td>
-                  <td className="px-4 py-3">{s.language}</td>
+                <tr key={s.id} className="border-t border-dim-grey/40">
+                  <td className="px-4 py-3 text-snow">{s.username}</td>
+                  <td className="px-4 py-3 text-fog">{s.problem_title}</td>
+                  <td className="px-4 py-3 text-snow">{s.status}</td>
+                  <td className="px-4 py-3 text-fog">{s.language}</td>
                 </tr>
               ))}
             </tbody>

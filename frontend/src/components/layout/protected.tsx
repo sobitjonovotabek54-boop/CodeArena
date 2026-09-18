@@ -30,7 +30,7 @@ export function Protected({
 
   if (!hydrated || !user || (adminOnly && !user.is_admin)) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#07090d] text-zinc-400">
+      <div className="flex min-h-screen items-center justify-center bg-cosmic text-fog">
         Loading…
       </div>
     );
