@@ -1,0 +1,28 @@
+---
+description: Har ~10 qator koddan keyin darhol commit va push qilish (ustoz talabi)
+alwaysApply: true
+---
+
+# Tez-tez commit + push
+
+Ustoz talabi: kichik o‘zgarishlarni ham darhol GitHub’ga chiqarish.
+
+## Qoida
+
+1. Taxminan **10 qator** yoki undan ko‘p kod yozilganda / tahrirlanganda — **darhol** `git add`, `git commit`, keyin `git push`.
+2. Katta vazifani oxirigacha kutma. Har bir kichik qadamni alohida commit qil.
+3. Commit xabari qisqa va aniq bo‘lsin (nima uchun / nima o‘zgardi).
+4. `.env`, secret, credential fayllarni hech qachon commit qilma.
+5. Faqat bo‘sh qator / whitespace o‘zgarishlarini commit qilma.
+6. User "commit qilma" yoki "push qilma" desagina to‘xta.
+
+## Harakat tartibi
+
+```
+1) o‘zgarishni yoz
+2) git add relevant fayllar
+3) git commit -m "..."
+4) git push -u origin HEAD
+```
+
+Push so‘ralmagan bo‘lsa ham — bu loyihada push **majburiy**.
