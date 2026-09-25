@@ -67,3 +67,64 @@ class ActivityDay(models.Model):
     class Meta:
         unique_together = ("user", "date")
         ordering = ["date"]
+
+
+class CoinTransaction(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="coin_transactions")
+    amount = models.IntegerField()
+    transaction_type = models.CharField(max_length=40)  # problem_solve, referral_bonus, shop_purchase, etc.
+    description = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Coin<{self.user_id}:{self.amount}>"
+
+
+class ShopItem(models.Model):
+    CATEGORY_CHOICES = (
+        ("frame", "Avatar Frame"),
+        ("title", "Profile Title"),
+        ("theme", "IDE Theme"),
+        ("booster", "Booster & Utility"),
+    )
+    RARITY_CHOICES = (
+        ("common", "Common"),
+        ("rare", "Rare"),
+        ("epic", "Epic"),
+        ("legendary", "Legendary"),
+    )
+
+    item_id = models.CharField(max_length=60, unique=True)
+    title = models.CharField(max_length=120)
+    description = models.TextField()
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES)
+    price = models.PositiveIntegerField(default=100)
+    icon = models.CharField(max_length=50, default="sparkles")
+    rarity = models.CharField(max_length=20, choices=RARITY_CHOICES, default="rare")
+    preview_data = models.JSONField(default=dict, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["price"]
+
+    def __str__(self):
+        return f"{self.title} ({self.price} coins)"
+
+
+class UserPurchase(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="purchases")
+    item = models.ForeignKey(ShopItem, on_delete=models.CASCADE, related_name="owners")
+    is_equipped = models.BooleanField(default=False)
+    purchased_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "item")
+        ordering = ["-purchased_at"]
+
+    def __str__(self):
+        return f"{self.user_id} owns {self.item.item_id}"
+

@@ -6,6 +6,7 @@ from .models import Profile, User
 
 class ProfileInline(admin.StackedInline):
     model = Profile
+    fk_name = "user"
     can_delete = False
 
 
@@ -19,5 +20,5 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "xp", "level", "problems_solved", "current_streak")
-    search_fields = ("user__username",)
+    list_display = ("user", "coins", "xp", "level", "referral_code", "problems_solved", "current_streak")
+    search_fields = ("user__username", "referral_code")

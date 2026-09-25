@@ -86,6 +86,14 @@ def home_view(request):
 </html>"""
     return HttpResponse(html)
 
+from gamification.shop_views import (
+    ReferralInfoView,
+    ShopBuyView,
+    ShopEquipView,
+    ShopItemListView,
+    UserInventoryView,
+)
+
 urlpatterns = [
     path("", home_view, name="home"),
     path("admin/", __import__("django.contrib.admin", fromlist=["site"]).site.urls),
@@ -104,6 +112,11 @@ urlpatterns = [
     path("api/achievements/", AchievementsView.as_view(), name="achievements"),
     path("api/activity/", ActivityView.as_view(), name="activity"),
     path("api/xp/", MyXPView.as_view(), name="xp"),
+    path("api/shop/items/", ShopItemListView.as_view(), name="shop-items"),
+    path("api/shop/buy/", ShopBuyView.as_view(), name="shop-buy"),
+    path("api/shop/equip/", ShopEquipView.as_view(), name="shop-equip"),
+    path("api/shop/inventory/", UserInventoryView.as_view(), name="shop-inventory"),
+    path("api/referrals/", ReferralInfoView.as_view(), name="referrals"),
     path("api/admin/stats/", AdminStatsView.as_view(), name="admin-stats"),
     path("api/admin/submissions/", AdminSubmissionListView.as_view(), name="admin-submissions"),
     path("api/", include(router.urls)),

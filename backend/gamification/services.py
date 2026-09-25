@@ -4,8 +4,43 @@ from django.db import transaction
 from django.utils import timezone
 
 from accounts.models import Profile
-from gamification.models import Achievement, ActivityDay, CodingStreak, UserAchievement, XPTransaction
+from gamification.models import (
+    Achievement,
+    ActivityDay,
+    CodingStreak,
+    CoinTransaction,
+    UserAchievement,
+    XPTransaction,
+)
 from problems.models import UserProblem
+
+COIN_REWARDS = {
+    "easy": 50,
+    "medium": 150,
+    "hard": 300,
+}
+
+
+def award_coins(user, amount: int, reason: str, transaction_type: str = "general"):
+    profile, _ = Profile.objects.get_or_create(user=user)
+    profile.coins += amount
+    profile.save(update_fields=["coins", "updated_at"])
+    CoinTransaction.objects.create(
+        user=user, amount=amount, transaction_type=transaction_type, description=reason
+    )
+    return profile
+
+
+def deduct_coins(user, amount: int, reason: str, transaction_type: str = "shop_purchase"):
+    profile, _ = Profile.objects.get_or_create(user=user)
+    if profile.coins < amount:
+        raise ValueError("Yetarli coin mavjud emas.")
+    profile.coins -= amount
+    profile.save(update_fields=["coins", "updated_at"])
+    CoinTransaction.objects.create(
+        user=user, amount=-amount, transaction_type=transaction_type, description=reason
+    )
+    return profile
 
 
 def award_xp(user, amount: int, reason: str, problem=None):
@@ -97,6 +132,7 @@ def handle_accepted_submission(user, problem, runtime=None):
     up.attempts += 1
     first_solve = False
     xp_gained = 0
+    coins_gained = 0
 
     if not up.solved:
         up.solved = True
@@ -105,7 +141,9 @@ def handle_accepted_submission(user, problem, runtime=None):
         up.save()
         first_solve = True
         xp_gained = problem.xp_reward
+        coins_gained = COIN_REWARDS.get(problem.difficulty, 50)
         award_xp(user, xp_gained, f"Solved: {problem.title}", problem=problem)
+        award_coins(user, coins_gained, f"Masala yechildi ({problem.difficulty.capitalize()}): {problem.title}", "problem_solve")
         profile.refresh_from_db()
         profile.problems_solved += 1
         profile.accepted_submissions += 1
@@ -116,6 +154,9 @@ def handle_accepted_submission(user, problem, runtime=None):
         if runtime is not None and (up.best_runtime is None or runtime < up.best_runtime):
             up.best_runtime = runtime
         up.save()
+        coins_gained = 15  # Takroriy mashq uchun kichik coin
+        award_coins(user, coins_gained, f"Mashq bonusi: {problem.title}", "practice_solve")
+        profile.refresh_from_db()
         profile.accepted_submissions += 1
         profile.total_submissions += 1
         profile.save(update_fields=["accepted_submissions", "total_submissions", "updated_at"])
@@ -123,9 +164,12 @@ def handle_accepted_submission(user, problem, runtime=None):
 
     bump_activity(user)
     achievements = check_achievements(user)
+    profile.refresh_from_db()
     return {
         "first_solve": first_solve,
         "xp_gained": xp_gained,
+        "coins_gained": coins_gained,
+        "total_coins": profile.coins,
         "achievements": [a.code for a in achievements],
     }
 

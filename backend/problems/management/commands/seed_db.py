@@ -6,7 +6,16 @@ from datetime import timedelta
 import random
 
 from accounts.models import Profile
-from gamification.models import Achievement, ActivityDay, CodingStreak, UserAchievement, XPTransaction
+from gamification.models import (
+    Achievement,
+    ActivityDay,
+    CodingStreak,
+    CoinTransaction,
+    ShopItem,
+    UserAchievement,
+    UserPurchase,
+    XPTransaction,
+)
 from problems.models import Category, Problem, TestCase, UserProblem
 from problems.seed_data import PROBLEMS, STARTER
 from submissions.models import Submission
@@ -33,6 +42,139 @@ ACHIEVEMENTS = [
     ("hard_coder", "Hard Coder", "Solve 3 hard problems", "flame", 3),
     ("seven_day_streak", "7 Day Streak", "Maintain a 7-day coding streak", "calendar", 7),
     ("century_coder", "Century Coder", "Solve 100 problems", "trophy", 100),
+]
+
+SHOP_ITEMS = [
+    (
+        "frame_neon_cyan",
+        "Neon Kiber Ramka",
+        "Moviy neon nurlanishga ega bo'lgan kiberpank uslubidagi avatar ramkasi.",
+        "frame",
+        300,
+        "sparkles",
+        "rare",
+        {"borderColor": "#06b6d4", "boxShadow": "0 0 15px #06b6d4", "badge": "Neon Cyan"},
+    ),
+    (
+        "frame_gold_crown",
+        "Oltin Qirollik Toji",
+        "Yetakchilar va chempionlar uchun maxsus oltin toj va zarhal ramka.",
+        "frame",
+        700,
+        "crown",
+        "epic",
+        {"borderColor": "#eab308", "boxShadow": "0 0 20px #eab308", "badge": "Gold Crown"},
+    ),
+    (
+        "frame_matrix_green",
+        "Zaharli Matrix Ramka",
+        "Haqiqiy xakerlar uchun yashil terminal matritsasi effektli avatar hoshiyasi.",
+        "frame",
+        500,
+        "terminal",
+        "rare",
+        {"borderColor": "#22c55e", "boxShadow": "0 0 15px #22c55e", "badge": "Matrix"},
+    ),
+    (
+        "frame_flame_phoenix",
+        "Olovli Feniks",
+        "Afsanaviy yonuvchi olov effekti. Yuqori streakli dasturchilar faxri.",
+        "frame",
+        1200,
+        "flame",
+        "legendary",
+        {"borderColor": "#ef4444", "boxShadow": "0 0 25px #f97316", "badge": "Phoenix"},
+    ),
+    (
+        "title_python_ninja",
+        "Python Ninja",
+        "Yengilmas va chaqqon Python algoritmlari ustasi.",
+        "title",
+        250,
+        "code",
+        "common",
+        {"textColor": "#38bdf8", "bgGradient": "from-sky-500/20 to-blue-500/20"},
+    ),
+    (
+        "title_bug_hunter",
+        "Bug Hunter",
+        "Eng murakkab xatoliklarni bir zumda topib tuzatuvchi ovchi.",
+        "title",
+        400,
+        "shield",
+        "rare",
+        {"textColor": "#a855f7", "bgGradient": "from-purple-500/20 to-pink-500/20"},
+    ),
+    (
+        "title_code_wizard",
+        "Code Wizard",
+        "Murakkab algoritmlarni sehr kabi yechuvchi buyuk dasturchi.",
+        "title",
+        800,
+        "sparkles",
+        "epic",
+        {"textColor": "#f59e0b", "bgGradient": "from-amber-500/20 to-yellow-500/20"},
+    ),
+    (
+        "title_grand_champion",
+        "Grand Champion",
+        "CodeArena musobaqalarining eng yuqori darajadagi mutlaq g'olibi.",
+        "title",
+        1500,
+        "trophy",
+        "legendary",
+        {"textColor": "#ec4899", "bgGradient": "from-rose-500/20 to-pink-500/20"},
+    ),
+    (
+        "theme_cyberpunk",
+        "Cyberpunk Neon IDE",
+        "Monaco kod muharriri uchun binafsha va zumrad rangli kiberpank mavzusi.",
+        "theme",
+        600,
+        "palette",
+        "epic",
+        {"themeId": "cyberpunk-neon", "accent": "#a855f7"},
+    ),
+    (
+        "theme_matrix_hacker",
+        "Matrix Terminal IDE",
+        "Klassik qora-yashil matritsa kod muharriri uslubi.",
+        "theme",
+        500,
+        "terminal",
+        "rare",
+        {"themeId": "matrix-green", "accent": "#22c55e"},
+    ),
+    (
+        "theme_monokai_pro",
+        "Monokai Pro Dark",
+        "Ko'zni charchatmaydigan professional dasturchilar standarti.",
+        "theme",
+        450,
+        "palette",
+        "rare",
+        {"themeId": "monokai-pro", "accent": "#eab308"},
+    ),
+    (
+        "booster_streak_shield",
+        "Streak Qalqoni (Freeze)",
+        "Kunlik seriyangiz (streak) uzilib qolishidan himoya qiluvchi xavfsizlik qalqoni.",
+        "booster",
+        350,
+        "shield",
+        "rare",
+        {"type": "streak_freeze", "uses": 1},
+    ),
+    (
+        "booster_hint_token",
+        "Maslahat Tokeni (Hint Token)",
+        "Qiyin algoritmik masalalarda optimal yondashuv bo'yicha maslahat ochish tokeni.",
+        "booster",
+        150,
+        "zap",
+        "common",
+        {"type": "problem_hint", "uses": 1},
+    ),
 ]
 
 
@@ -101,6 +243,22 @@ class Command(BaseCommand):
             first_easy.is_daily_challenge = True
             first_easy.save(update_fields=["is_daily_challenge"])
 
+        # Seed Shop Items
+        for item_id, title, desc, cat, price, icon, rarity, preview in SHOP_ITEMS:
+            ShopItem.objects.update_or_create(
+                item_id=item_id,
+                defaults={
+                    "title": title,
+                    "description": desc,
+                    "category": cat,
+                    "price": price,
+                    "icon": icon,
+                    "rarity": rarity,
+                    "preview_data": preview,
+                    "is_active": True,
+                },
+            )
+
         admin, created = User.objects.get_or_create(
             username="admin",
             defaults={"email": "admin@codearena.dev", "is_admin": True, "is_staff": True, "is_superuser": True},
@@ -113,23 +271,28 @@ class Command(BaseCommand):
             admin.is_staff = True
             admin.is_superuser = True
             admin.save()
-        Profile.objects.get_or_create(user=admin)
+        admin_prof, _ = Profile.objects.get_or_create(user=admin)
+        admin_prof.coins = 2500
+        admin_prof.save()
 
         demo_users = [
-            ("alice", "alice@codearena.dev", "pass1234", 120, 8),
-            ("bob", "bob@codearena.dev", "pass1234", 85, 5),
-            ("carol", "carol@codearena.dev", "pass1234", 200, 12),
-            ("dave", "dave@codearena.dev", "pass1234", 45, 3),
-            ("erin", "erin@codearena.dev", "pass1234", 310, 15),
+            ("alice", "alice@codearena.dev", "pass1234", 120, 8, 1150, "frame_neon_cyan", "title_python_ninja"),
+            ("bob", "bob@codearena.dev", "pass1234", 85, 5, 800, "frame_matrix_green", "title_bug_hunter"),
+            ("carol", "carol@codearena.dev", "pass1234", 200, 12, 1750, "frame_gold_crown", "title_code_wizard"),
+            ("dave", "dave@codearena.dev", "pass1234", 45, 3, 450, "", "title_python_ninja"),
+            ("erin", "erin@codearena.dev", "pass1234", 310, 15, 2300, "frame_flame_phoenix", "title_grand_champion"),
         ]
         problems = list(Problem.objects.all())
-        for username, email, password, xp, solved_n in demo_users:
+        for username, email, password, xp, solved_n, coins, frame, title_item in demo_users:
             user, created = User.objects.get_or_create(username=username, defaults={"email": email})
             if created:
                 user.set_password(password)
                 user.save()
             profile, _ = Profile.objects.get_or_create(user=user)
             profile.xp = xp
+            profile.coins = coins
+            profile.equipped_frame = frame
+            profile.equipped_title = title_item
             profile.recalculate_level()
             profile.bio = f"Competitive coder · @{username}"
             profile.avatar_url = f"https://api.dicebear.com/7.x/identicon/svg?seed={username}"
@@ -138,6 +301,20 @@ class Command(BaseCommand):
             profile.last_solved_date = timezone.now().date()
             profile.problems_solved = 0
             profile.save()
+
+            # Assign purchases for equipped items
+            if frame:
+                try:
+                    f_item = ShopItem.objects.get(item_id=frame)
+                    UserPurchase.objects.get_or_create(user=user, item=f_item, defaults={"is_equipped": True})
+                except ShopItem.DoesNotExist:
+                    pass
+            if title_item:
+                try:
+                    t_item = ShopItem.objects.get(item_id=title_item)
+                    UserPurchase.objects.get_or_create(user=user, item=t_item, defaults={"is_equipped": True})
+                except ShopItem.DoesNotExist:
+                    pass
 
             for problem in random.sample(problems, min(solved_n, len(problems))):
                 UserProblem.objects.update_or_create(
@@ -186,7 +363,7 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Seeded {easy} easy, {medium} medium, {hard} hard problems. "
+                f"Seeded {easy} easy, {medium} medium, {hard} hard problems, 13 shop items, and coin rewards. "
                 f"Admin: admin/admin123 · Demo: alice/pass1234"
             )
         )

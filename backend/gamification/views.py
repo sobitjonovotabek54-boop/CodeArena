@@ -31,7 +31,8 @@ class LeaderboardView(APIView):
             rows = (
                 XPTransaction.objects.filter(created_at__gte=since, amount__gt=0)
                 .values("user_id", "user__username", "user__profile__level", "user__profile__problems_solved",
-                        "user__profile__current_streak", "user__profile__avatar_url")
+                        "user__profile__current_streak", "user__profile__avatar_url",
+                        "user__profile__coins", "user__profile__equipped_frame", "user__profile__equipped_title")
                 .annotate(xp=Sum("amount"))
                 .order_by("-xp")[:limit]
             )
@@ -44,6 +45,9 @@ class LeaderboardView(APIView):
                         "username": row["user__username"],
                         "level": row["user__profile__level"] or 1,
                         "xp": row["xp"] or 0,
+                        "coins": row["user__profile__coins"] or 0,
+                        "equipped_frame": row["user__profile__equipped_frame"] or "",
+                        "equipped_title": row["user__profile__equipped_title"] or "",
                         "problems_solved": row["user__profile__problems_solved"] or 0,
                         "current_streak": row["user__profile__current_streak"] or 0,
                         "avatar_url": row["user__profile__avatar_url"] or "",
@@ -54,7 +58,8 @@ class LeaderboardView(APIView):
             rows = (
                 XPTransaction.objects.filter(created_at__gte=since, amount__gt=0)
                 .values("user_id", "user__username", "user__profile__level", "user__profile__problems_solved",
-                        "user__profile__current_streak", "user__profile__avatar_url")
+                        "user__profile__current_streak", "user__profile__avatar_url",
+                        "user__profile__coins", "user__profile__equipped_frame", "user__profile__equipped_title")
                 .annotate(xp=Sum("amount"))
                 .order_by("-xp")[:limit]
             )
@@ -67,6 +72,9 @@ class LeaderboardView(APIView):
                         "username": row["user__username"],
                         "level": row["user__profile__level"] or 1,
                         "xp": row["xp"] or 0,
+                        "coins": row["user__profile__coins"] or 0,
+                        "equipped_frame": row["user__profile__equipped_frame"] or "",
+                        "equipped_title": row["user__profile__equipped_title"] or "",
                         "problems_solved": row["user__profile__problems_solved"] or 0,
                         "current_streak": row["user__profile__current_streak"] or 0,
                         "avatar_url": row["user__profile__avatar_url"] or "",
@@ -83,6 +91,9 @@ class LeaderboardView(APIView):
                         "username": p.user.username,
                         "level": p.level,
                         "xp": p.xp,
+                        "coins": p.coins,
+                        "equipped_frame": p.equipped_frame or "",
+                        "equipped_title": p.equipped_title or "",
                         "problems_solved": p.problems_solved,
                         "current_streak": p.current_streak,
                         "avatar_url": p.avatar_url or "",

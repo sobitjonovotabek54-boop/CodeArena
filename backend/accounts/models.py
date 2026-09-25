@@ -19,6 +19,13 @@ class Profile(models.Model):
     avatar_url = models.URLField(blank=True, default="")
     xp = models.PositiveIntegerField(default=0)
     level = models.PositiveIntegerField(default=1)
+    coins = models.PositiveIntegerField(default=100)
+    referral_code = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    referred_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="referrals")
+    equipped_frame = models.CharField(max_length=50, blank=True, default="")
+    equipped_title = models.CharField(max_length=100, blank=True, default="")
+    equipped_theme = models.CharField(max_length=50, blank=True, default="vs-dark")
+    streak_shields = models.PositiveIntegerField(default=0)
     problems_solved = models.PositiveIntegerField(default=0)
     total_submissions = models.PositiveIntegerField(default=0)
     accepted_submissions = models.PositiveIntegerField(default=0)
@@ -32,6 +39,14 @@ class Profile(models.Model):
 
     class Meta:
         ordering = ["-xp"]
+
+    def save(self, *args, **kwargs):
+        if not self.referral_code:
+            import secrets
+            token = secrets.token_hex(3).upper()
+            username_prefix = "".join(c for c in self.user.username if c.isalnum())[:6].upper()
+            self.referral_code = f"CA_{username_prefix}_{token}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Profile<{self.user.username}>"
