@@ -244,7 +244,7 @@ export function getProblemInputFormat(
   lang: "uz" | "en"
 ): string {
   if (lang === "uz" && PROBLEM_TRANSLATIONS[problem.slug]?.input_format_uz) {
-    return PROBLEM_TRANSLATIONS[problem.slug].input_format_uz;
+    return PROBLEM_TRANSLATIONS[problem.slug].input_format_uz ?? "";
   }
   return problem.input_format || "";
 }
@@ -254,7 +254,7 @@ export function getProblemOutputFormat(
   lang: "uz" | "en"
 ): string {
   if (lang === "uz" && PROBLEM_TRANSLATIONS[problem.slug]?.output_format_uz) {
-    return PROBLEM_TRANSLATIONS[problem.slug].output_format_uz;
+    return PROBLEM_TRANSLATIONS[problem.slug].output_format_uz ?? "";
   }
   return problem.output_format || "";
 }

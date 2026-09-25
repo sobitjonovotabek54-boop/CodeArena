@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Editor, { OnMount } from "@monaco-editor/react";
+import Editor, { BeforeMount, OnMount } from "@monaco-editor/react";
 import {
   Play,
   Send,
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 import { useLang } from "@/store/lang";
+import { useAuth } from "@/store/auth";
 import { getProblemDescription, getProblemTitle } from "@/lib/problem-translations";
 import type { Problem, Submission } from "@/lib/types";
 import { cn, difficultyColor, formatStatus, statusColor } from "@/lib/utils";
@@ -27,6 +28,75 @@ const LANGS = [
   { id: "cpp", label: "C++", monaco: "cpp" },
   { id: "java", label: "Java", monaco: "java" },
 ] as const;
+
+type Reward = {
+  first_solve: boolean;
+  xp_gained: number;
+  coins_gained?: number;
+  total_coins?: number;
+};
+
+// Do'kondan sotib olinadigan IDE mavzulari (ShopItem.preview_data.themeId)
+const defineShopThemes: BeforeMount = (monaco) => {
+  monaco.editor.defineTheme("cyberpunk-neon", {
+    base: "vs-dark",
+    inherit: true,
+    rules: [
+      { token: "keyword", foreground: "ff2e97", fontStyle: "bold" },
+      { token: "string", foreground: "00f5d4" },
+      { token: "number", foreground: "fee440" },
+      { token: "comment", foreground: "7b6f9c", fontStyle: "italic" },
+      { token: "type", foreground: "a855f7" },
+    ],
+    colors: {
+      "editor.background": "#120b24",
+      "editor.foreground": "#e0d7ff",
+      "editor.lineHighlightBackground": "#1f1440",
+      "editorCursor.foreground": "#ff2e97",
+      "editorLineNumber.foreground": "#5b4a8a",
+      "editor.selectionBackground": "#a855f755",
+    },
+  });
+  monaco.editor.defineTheme("matrix-green", {
+    base: "vs-dark",
+    inherit: true,
+    rules: [
+      { token: "", foreground: "22c55e" },
+      { token: "keyword", foreground: "4ade80", fontStyle: "bold" },
+      { token: "string", foreground: "86efac" },
+      { token: "number", foreground: "bbf7d0" },
+      { token: "comment", foreground: "166534", fontStyle: "italic" },
+    ],
+    colors: {
+      "editor.background": "#000000",
+      "editor.foreground": "#22c55e",
+      "editor.lineHighlightBackground": "#052e16",
+      "editorCursor.foreground": "#4ade80",
+      "editorLineNumber.foreground": "#14532d",
+      "editor.selectionBackground": "#16a34a55",
+    },
+  });
+  monaco.editor.defineTheme("monokai-pro", {
+    base: "vs-dark",
+    inherit: true,
+    rules: [
+      { token: "keyword", foreground: "ff6188" },
+      { token: "string", foreground: "ffd866" },
+      { token: "number", foreground: "ab9df2" },
+      { token: "comment", foreground: "727072", fontStyle: "italic" },
+      { token: "type", foreground: "78dce8" },
+      { token: "identifier", foreground: "fcfcfa" },
+    ],
+    colors: {
+      "editor.background": "#2d2a2e",
+      "editor.foreground": "#fcfcfa",
+      "editor.lineHighlightBackground": "#403e41",
+      "editorCursor.foreground": "#fcfcfa",
+      "editorLineNumber.foreground": "#5b595c",
+      "editor.selectionBackground": "#5b595c88",
+    },
+  });
+};
 
 type RunPayload = {
   status: string;
@@ -47,6 +117,8 @@ type RunPayload = {
 
 export function CodingWorkspace({ problem }: { problem: Problem }) {
   const { t, lang } = useLang();
+  const editorTheme = useAuth((s) => s.user?.profile?.equipped_theme) || "vs-dark";
+  const fetchMe = useAuth((s) => s.fetchMe);
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState(problem.starter_code?.python || "");
   const [fontSize, setFontSize] = useState(14);
@@ -55,7 +127,7 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
   const [consoleHeight, setConsoleHeight] = useState(190);
   const [busy, setBusy] = useState<"run" | "submit" | null>(null);
   const [result, setResult] = useState<RunPayload | null>(null);
-  const [reward, setReward] = useState<{ first_solve?: boolean; xp_gained?: number } | null>(null);
+  const [reward, setReward] = useState<Reward | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const dragging = useRef<"h" | "v" | null>(null);
@@ -109,13 +181,15 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
       const data = await api<{
         result: RunPayload;
         submission: Submission;
-        reward: { first_solve: boolean; xp_gained: number } | null;
+        reward: Reward | null;
       }>("/submit/", {
         method: "POST",
         body: JSON.stringify({ problem_id: problem.id, language, code }),
       });
       setResult(data.result);
       setReward(data.reward);
+      // Navbar'dagi coin/XP balansini yangilash
+      if (data.reward) fetchMe().catch(() => {});
     } catch (e) {
       setError(e instanceof Error ? e.message : "Submit failed");
     } finally {
@@ -279,7 +353,8 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
           <div className="min-h-[580px] flex-1" style={{ minHeight: 580 }}>
             <Editor
               height="100%"
-              theme="vs-dark"
+              theme={editorTheme}
+              beforeMount={defineShopThemes}
               language={monacoLang}
               value={code}
               onChange={(v) => setCode(v || "")}
@@ -331,6 +406,11 @@ export function CodingWorkspace({ problem }: { problem: Problem }) {
           {reward?.first_solve && (
             <div className="mb-2.5 rounded-lg border border-spring-green/40 bg-spring-green/10 p-2.5 text-spring-green font-sans font-semibold flex items-center gap-2 ">
               <span>🎉</span> {t.workspace.congrats} +{reward.xp_gained} {t.workspace.xpGained}
+              {!!reward.coins_gained && (
+                <span className="ml-1 rounded-full bg-amber-400/15 px-2 py-0.5 text-amber-300">
+                  🪙 +{reward.coins_gained} {t.workspace.coinsGained}
+                </span>
+              )}
             </div>
           )}
           {!result && !error && (

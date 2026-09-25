@@ -19,6 +19,62 @@ export type Profile = {
   xp_for_current_level: number;
   xp_for_next_level: number;
   rank: number;
+  coins: number;
+  referral_code: string | null;
+  referral_count: number;
+  equipped_frame: string;
+  equipped_title: string;
+  equipped_theme: string;
+  streak_shields: number;
+};
+
+export type ShopCategory = "frame" | "title" | "theme" | "booster";
+export type ShopRarity = "common" | "rare" | "epic" | "legendary";
+
+export type ShopItem = {
+  id: number;
+  item_id: string;
+  title: string;
+  description: string;
+  category: ShopCategory;
+  price: number;
+  icon: string;
+  rarity: ShopRarity;
+  preview_data: {
+    borderColor?: string;
+    boxShadow?: string;
+    badge?: string;
+    textColor?: string;
+    themeId?: string;
+    accent?: string;
+  };
+  is_owned: boolean;
+  is_equipped: boolean;
+};
+
+export type CoinTransaction = {
+  id: number;
+  amount: number;
+  transaction_type: string;
+  description: string;
+  created_at: string;
+};
+
+export type ReferralInfo = {
+  referral_code: string;
+  total_referrals: number;
+  total_earned_coins: number;
+  reward_per_referral: number;
+  welcome_bonus: number;
+  referrals: {
+    id: number;
+    username: string;
+    level: number;
+    xp: number;
+    avatar_url: string;
+    date_joined: string;
+    reward_coins: number;
+  }[];
 };
 
 export type User = {
@@ -104,6 +160,9 @@ export type LeaderboardEntry = {
   problems_solved: number;
   current_streak: number;
   avatar_url: string;
+  coins?: number;
+  equipped_frame?: string;
+  equipped_title?: string;
 };
 
 export type Achievement = {

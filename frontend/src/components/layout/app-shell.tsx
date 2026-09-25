@@ -12,6 +12,9 @@ import {
   LogOut,
   Shield,
   FileCode2,
+  ShoppingBag,
+  Gift,
+  Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
@@ -31,6 +34,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     { href: "/submissions", label: t.nav.submissions, icon: FileCode2 },
     { href: "/leaderboard", label: t.nav.leaderboard, icon: Trophy },
     { href: "/achievements", label: t.nav.achievements, icon: Medal },
+    { href: "/shop", label: t.nav.shop, icon: ShoppingBag },
+    { href: "/referrals", label: t.nav.invite, icon: Gift },
     { href: "/profile", label: t.nav.profile, icon: User },
     { href: "/settings", label: t.nav.settings, icon: Settings },
   ];
@@ -54,13 +59,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={href}
                   href={href}
+                  title={label}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-[12px] px-3 py-1.5 text-sm text-fog transition hover:bg-dark-charcoal hover:text-snow",
+                    "flex items-center gap-1.5 rounded-[12px] px-2.5 py-1.5 text-sm text-fog transition hover:bg-dark-charcoal hover:text-snow",
                     active && "bg-blurple/20 text-snow font-medium"
                   )}
                 >
-                  <Icon className="h-3.5 w-3.5" />
-                  {label}
+                  <Icon className="h-4 w-4" />
+                  <span className={active ? "" : "sr-only"}>{label}</span>
                 </Link>
               );
             })}
@@ -79,6 +85,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="flex items-center gap-2.5">
             <LangSwitch />
+            {user && (
+              <Link
+                href="/shop"
+                title={t.nav.shop}
+                className="flex items-center gap-1.5 rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-sm font-bold text-amber-300 transition hover:bg-amber-400/20"
+              >
+                <Coins className="h-4 w-4" />
+                {(user.profile?.coins ?? 0).toLocaleString()}
+              </Link>
+            )}
             {user && (
               <div className="hidden text-right text-xs sm:block">
                 <div className="font-medium text-snow">{user.username}</div>

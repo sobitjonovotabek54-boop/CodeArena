@@ -67,12 +67,22 @@ def update_streak(user, xp_earned: int = 0):
         pass
     elif profile.last_solved_date == today - timedelta(days=1):
         profile.current_streak += 1
+    elif profile.last_solved_date and profile.current_streak > 0:
+        # Streak qalqoni: har bir o'tkazib yuborilgan kun uchun bitta qalqon sarflanadi
+        missed_days = (today - profile.last_solved_date).days - 1
+        if 0 < missed_days <= profile.streak_shields:
+            profile.streak_shields -= missed_days
+            profile.current_streak += 1
+        else:
+            profile.current_streak = 1
     else:
         profile.current_streak = 1
 
     profile.longest_streak = max(profile.longest_streak, profile.current_streak)
     profile.last_solved_date = today
-    profile.save(update_fields=["current_streak", "longest_streak", "last_solved_date", "updated_at"])
+    profile.save(
+        update_fields=["current_streak", "longest_streak", "last_solved_date", "streak_shields", "updated_at"]
+    )
     return profile
 
 
@@ -154,13 +164,11 @@ def handle_accepted_submission(user, problem, runtime=None):
         if runtime is not None and (up.best_runtime is None or runtime < up.best_runtime):
             up.best_runtime = runtime
         up.save()
-        coins_gained = 15  # Takroriy mashq uchun kichik coin
-        award_coins(user, coins_gained, f"Mashq bonusi: {problem.title}", "practice_solve")
+        # Coin faqat birinchi yechim uchun beriladi, aks holda qayta yuborib cheksiz coin yig'ish mumkin
         profile.refresh_from_db()
         profile.accepted_submissions += 1
         profile.total_submissions += 1
         profile.save(update_fields=["accepted_submissions", "total_submissions", "updated_at"])
-        bump_activity(user)
 
     bump_activity(user)
     achievements = check_achievements(user)

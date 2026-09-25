@@ -185,7 +185,7 @@ class ShopEquipView(APIView):
             elif item.category == "title" and profile.equipped_title == item.item_id:
                 profile.equipped_title = ""
                 profile.save(update_fields=["equipped_title", "updated_at"])
-            elif item.category == "theme":
+            elif item.category == "theme" and profile.equipped_theme == item.preview_data.get("themeId"):
                 profile.equipped_theme = "vs-dark"
                 profile.save(update_fields=["equipped_theme", "updated_at"])
 

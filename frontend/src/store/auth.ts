@@ -9,7 +9,7 @@ type AuthState = {
   loading: boolean;
   hydrated: boolean;
   login: (username: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string, refCode?: string) => Promise<void>;
   logout: () => void;
   fetchMe: () => Promise<void>;
   hydrate: () => Promise<void>;
@@ -57,7 +57,7 @@ export const useAuth = create<AuthState>((set, get) => ({
     }
   },
 
-  register: async (username, email, password) => {
+  register: async (username, email, password, refCode) => {
     set({ loading: true });
     try {
       await api("/auth/register/", {
@@ -68,6 +68,7 @@ export const useAuth = create<AuthState>((set, get) => ({
           email,
           password,
           password_confirm: password,
+          ref_code: refCode?.trim() || "",
         }),
       });
       await get().login(username, password);

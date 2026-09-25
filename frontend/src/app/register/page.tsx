@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/store/auth";
 import { useLang } from "@/store/lang";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LangSwitch } from "@/components/layout/lang-switch";
-import { Code2 } from "lucide-react";
+import { Code2, Gift } from "lucide-react";
 
 export default function RegisterPage() {
   const { register, loading } = useAuth();
@@ -17,13 +17,19 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [refCode, setRefCode] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    if (ref) setRefCode(ref);
+  }, []);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     try {
-      await register(username, email, password);
+      await register(username, email, password, refCode);
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ro'yxatdan o'tishda xatolik yuz berdi");
@@ -62,6 +68,19 @@ export default function RegisterPage() {
               minLength={6}
               required
             />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-fog">{t.auth.refCode}</label>
+            <Input
+              value={refCode}
+              onChange={(e) => setRefCode(e.target.value)}
+              placeholder="CA_XXXXXX_XXXXXX"
+            />
+            {refCode.trim() && (
+              <p className="mt-1.5 flex items-center gap-1.5 text-xs text-spring-green">
+                <Gift className="h-3.5 w-3.5" /> {t.auth.refBonus}
+              </p>
+            )}
           </div>
           {error && (
             <div className="rounded-[12px] border border-ekko-red/40 bg-ekko-red/10 p-3 text-sm text-ekko-red">

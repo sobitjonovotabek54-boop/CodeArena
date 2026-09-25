@@ -5,6 +5,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Protected } from "@/components/layout/protected";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityChart } from "@/components/profile/activity-chart";
+import { FramedAvatar, TitleBadge } from "@/components/ui/cosmetics";
 import { api } from "@/lib/api";
 import { useAuth } from "@/store/auth";
 import type { Achievement, Profile } from "@/lib/types";
@@ -40,16 +41,18 @@ function ProfileInner() {
   return (
     <AppShell>
       <div className="mb-8 flex flex-wrap items-center gap-5">
-        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[16px] bg-blurple text-2xl font-bold text-snow">
-          {profile.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
-          ) : (
-            profile.username.slice(0, 2).toUpperCase()
-          )}
-        </div>
+        <FramedAvatar
+          name={profile.username}
+          src={profile.avatar_url}
+          frame={profile.equipped_frame}
+          size={80}
+        />
         <div>
           <h1 className="font-display-discord text-[36px] text-snow sm:text-[48px]">{profile.username}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <TitleBadge title={profile.equipped_title} />
+            <span className="flex items-center gap-1 text-sm font-bold text-amber-300">🪙 {profile.coins}</span>
+          </div>
           <p className="mt-1 max-w-lg text-fog">{profile.bio || "No bio yet."}</p>
           <p className="mt-1 text-sm text-greyple">
             Level {profile.level} · Rank #{profile.rank} · {user?.email}

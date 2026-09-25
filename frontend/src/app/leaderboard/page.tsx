@@ -8,6 +8,7 @@ import { useLang } from "@/store/lang";
 import type { LeaderboardEntry } from "@/lib/types";
 import { cn, tableWrapClass, thClass, trClass } from "@/lib/utils";
 import { Flame } from "lucide-react";
+import { FramedAvatar, TitleBadge } from "@/components/ui/cosmetics";
 
 export default function LeaderboardPage() {
   return (
@@ -82,7 +83,13 @@ function LeaderboardInner() {
                     `#${r.rank}`
                   )}
                 </td>
-                <td className="px-4 py-3 font-medium text-snow">{r.username}</td>
+                <td className="px-4 py-3 font-medium text-snow">
+                  <div className="flex items-center gap-2.5">
+                    <FramedAvatar name={r.username} src={r.avatar_url} frame={r.equipped_frame} size={32} />
+                    <span>{r.username}</span>
+                    <TitleBadge title={r.equipped_title} />
+                  </div>
+                </td>
                 <td className="px-4 py-3 text-fog">Lv {r.level}</td>
                 <td className="px-4 py-3 font-medium text-ember-orange">{r.xp} XP</td>
                 <td className="px-4 py-3 text-snow">{r.problems_solved}</td>

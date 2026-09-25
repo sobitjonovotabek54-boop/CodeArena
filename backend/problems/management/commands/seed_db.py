@@ -255,7 +255,8 @@ class Command(BaseCommand):
                     "icon": icon,
                     "rarity": rarity,
                     "preview_data": preview,
-                    "is_active": True,
+                    # Hint token hali hech qanday effektga ega emas, shuning uchun sotuvda yo'q
+                    "is_active": item_id != "booster_hint_token",
                 },
             )
 
