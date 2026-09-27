@@ -75,7 +75,7 @@ Open http://localhost:3000
 
 | User | Password | Notes |
 |------|----------|-------|
-| admin | admin123 | Admin dashboard |
+| admin | admin123 | Admin dashboard (local `DEBUG=True` only) |
 | alice | pass1234 | Demo coder |
 
 ## PostgreSQL
@@ -160,22 +160,27 @@ User code is **never** executed with `eval`/`exec` inside the Django process.
 6. Frontend: set `NEXT_PUBLIC_API_URL` to `https://<backend>.up.railway.app/api`
 7. Add frontend origin to `CORS_ALLOWED_ORIGINS`
 
-## Render deployment
+## Render deployment (backend) + Vercel (frontend)
 
-**Backend (Web Service)**
+**1. Backend + PostgreSQL on Render (Blueprint)**
 
-- Root: `backend`
-- Build: `pip install -r requirements.txt && python manage.py collectstatic --noinput`
-- Start: `gunicorn config.wsgi:application`
-- Attach Render PostgreSQL → `DATABASE_URL`
-- Set `DEBUG=False`, `ALLOWED_HOSTS`, `CORS_ALLOWED_ORIGINS`, secrets
+1. Render dashboard → **New → Blueprint** → select this GitHub repo. `render.yaml` creates
+   `codearena-backend` (Docker) and the `codearena-db` PostgreSQL database.
+2. Render asks for `ADMIN_USERS`: admin accounts as `username:email:password`
+   (several separated by commas, password ≥ 8 chars), e.g.
+   `otabek:otabek@mail.com:MyStrongPass1,ali:ali@mail.com:AnotherPass2`
+3. On every start the container runs `migrate`, `seed_db` (problems, shop items, demo users once)
+   and `ensure_admins` (creates/updates admins from `ADMIN_USERS`; edit the env var to rotate passwords).
+4. Check `https://<backend>.onrender.com/api/problems/`.
 
-**Frontend (Static/Web)**
+In production (`DEBUG=False`) the local-only `admin/admin123` account is **not** created.
 
-- Root: `frontend`
-- Build: `npm install && npm run build`
-- Start: `npm start`
-- Env: `NEXT_PUBLIC_API_URL`
+**2. Frontend on Vercel**
+
+1. Vercel → **Add New Project** → import this repo, **Root Directory: `frontend`**.
+2. Env var: `NEXT_PUBLIC_API_URL=https://<backend>.onrender.com/api`
+3. Deploy. Admins log in with their `ADMIN_USERS` credentials and see the **Admin** tab.
+   Other users can be promoted from the Admin page or Django admin at `https://<backend>.onrender.com/admin/`.
 
 ## Pages
 

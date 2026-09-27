@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -260,21 +261,19 @@ class Command(BaseCommand):
                 },
             )
 
-        admin, created = User.objects.get_or_create(
-            username="admin",
-            defaults={"email": "admin@codearena.dev", "is_admin": True, "is_staff": True, "is_superuser": True},
-        )
-        if created:
-            admin.set_password("admin123")
-            admin.save()
-        else:
-            admin.is_admin = True
-            admin.is_staff = True
-            admin.is_superuser = True
-            admin.save()
-        admin_prof, _ = Profile.objects.get_or_create(user=admin)
-        admin_prof.coins = 2500
-        admin_prof.save()
+        # admin/admin123 faqat lokal ishlab chiqish uchun. Productionda adminlar
+        # ADMIN_USERS env orqali `ensure_admins` buyrug'i bilan yaratiladi.
+        if settings.DEBUG:
+            admin, created = User.objects.get_or_create(
+                username="admin",
+                defaults={"email": "admin@codearena.dev", "is_admin": True, "is_staff": True, "is_superuser": True},
+            )
+            if created:
+                admin.set_password("admin123")
+                admin.save()
+                admin_prof, _ = Profile.objects.get_or_create(user=admin)
+                admin_prof.coins = 2500
+                admin_prof.save()
 
         demo_users = [
             ("alice", "alice@codearena.dev", "pass1234", 120, 8, 1150, "frame_neon_cyan", "title_python_ninja"),
@@ -286,9 +285,11 @@ class Command(BaseCommand):
         problems = list(Problem.objects.all())
         for username, email, password, xp, solved_n, coins, frame, title_item in demo_users:
             user, created = User.objects.get_or_create(username=username, defaults={"email": email})
-            if created:
-                user.set_password(password)
-                user.save()
+            if not created:
+                # Server har restartda seed_db ishlatadi: demo ma'lumotlarini qayta yozmaslik kerak
+                continue
+            user.set_password(password)
+            user.save()
             profile, _ = Profile.objects.get_or_create(user=user)
             profile.xp = xp
             profile.coins = coins
@@ -365,6 +366,7 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 f"Seeded {easy} easy, {medium} medium, {hard} hard problems, 13 shop items, and coin rewards. "
-                f"Admin: admin/admin123 · Demo: alice/pass1234"
+                + ("Admin: admin/admin123 · " if settings.DEBUG else "")
+                + "Demo: alice/pass1234"
             )
         )
