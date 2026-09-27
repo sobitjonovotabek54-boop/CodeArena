@@ -1,6 +1,7 @@
 services:
+  # ---------- Backend: Django API (Docker) ----------
   - type: web
-    name: codearena-backend
+    name: codearena-otabek-api
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free
@@ -26,6 +27,24 @@ services:
         fromDatabase:
           name: codearena-db
           property: connectionString
+
+  # ---------- Frontend: Next.js ----------
+  - type: web
+    name: codearena-otabek
+    runtime: node
+    rootDir: frontend
+    plan: free
+    region: oregon
+    buildCommand: npm ci && npx next build
+    startCommand: npx next start -p $PORT
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22.14.0"
+      # Backend manzili build paytida frontendga yoziladi.
+      # Agar Render backendga boshqa manzil bersa, shu qiymatni o'zgartirib "Manual Deploy" qiling.
+      - key: NEXT_PUBLIC_API_URL
+        value: https://codearena-otabek-api.onrender.com/api
 
 databases:
   - name: codearena-db
